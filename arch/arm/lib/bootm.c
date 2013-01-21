@@ -259,11 +259,13 @@ static int create_fdt(bootm_headers_t *images)
 		return ret;
 
 	fdt_chosen(*of_flat_tree, 1);
+#if 0
 	fixup_memory_node(*of_flat_tree);
 	fdt_fixup_ethernet(*of_flat_tree);
 	fdt_initrd(*of_flat_tree, *initrd_start, *initrd_end, 1);
 #ifdef CONFIG_OF_BOARD_SETUP
 	ft_board_setup(*of_flat_tree, gd->bd);
+#endif
 #endif
 
 	return 0;
