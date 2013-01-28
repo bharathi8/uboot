@@ -48,7 +48,7 @@
 
 /* Memory Info */
 #define CONFIG_NR_DRAM_BANKS		1
-#if 0
+#if 1
 #define PHYS_SDRAM_1			0x80000000
 #define PHYS_SDRAM_1_SIZE		(512 << 20)	/* 2 MiB */
 #else

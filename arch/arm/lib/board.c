@@ -210,7 +210,6 @@ typedef int (init_fnc_t) (void);
 
 int print_cpuinfo(void);
 
-#ifndef CONFIG_SOC_TCI6638
 void __dram_init_banksize(void)
 {
 	gd->bd->bi_dram[0].start = CONFIG_SYS_SDRAM_BASE;
@@ -218,7 +217,6 @@ void __dram_init_banksize(void)
 }
 void dram_init_banksize(void)
 	__attribute__((weak, alias("__dram_init_banksize")));
-#endif
 
 int __arch_cpu_init(void)
 {
@@ -335,14 +333,7 @@ void board_init_f(ulong bootflag)
 	gd->ram_size -= CONFIG_SYS_MEM_TOP_HIDE;
 #endif
 
-#ifndef CONFIG_SOC_TCI6638
-	addr = PHYS_SDRAM_1 + PHYS_SDRAM_1_SIZE;
-#else
-	/* We are faking to use MSMC RAM as DDR to do relocation to upper
-	 * part of MSMC RAM
-	 */
-	addr = MSM_RELOCATE_ADDR;
-#endif
+	addr = CONFIG_SYS_SDRAM_BASE + gd->ram_size;
 
 #ifdef CONFIG_LOGBUFFER
 #ifndef CONFIG_ALT_LB_ADDR
@@ -465,10 +456,9 @@ void board_init_f(ulong bootflag)
 
 	gd->bd->bi_baudrate = gd->baudrate;
 	/* Ram ist board specific, so move it to board code ... */
-#ifndef CONFIG_SOC_TCI6638
 	dram_init_banksize();
 	display_dram_config();	/* and display it */
-#endif
+
 	gd->relocaddr = addr;
 	gd->start_addr_sp = addr_sp;
 	gd->reloc_off = addr - _TEXT_BASE;
@@ -683,10 +673,6 @@ void board_init_r(gd_t *id, ulong dest_addr)
 
 #ifdef CONFIG_POST
 	post_run(NULL, POST_RAM | post_bootmode_get(0));
-#endif
-
-#ifdef CONFIG_TCI6614_EVM
-	tci6614_post();
 #endif
 
 #if defined(CONFIG_PRAM) || defined(CONFIG_LOGBUFFER)
